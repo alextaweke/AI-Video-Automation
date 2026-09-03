@@ -1,3 +1,23 @@
 from django.contrib import admin
 
-# Register your models here.
+from .models import Video
+
+
+@admin.register(Video)
+class VideoAdmin(admin.ModelAdmin):
+
+    list_display = [
+        "id",
+        "title",
+        "status",
+        "created_at",
+    ]
+
+    list_filter = [
+        "status",
+    ]
+
+    search_fields = [
+        "title",
+        "topic",
+    ]
