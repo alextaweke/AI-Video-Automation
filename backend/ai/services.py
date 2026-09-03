@@ -1,4 +1,4 @@
-from .claude import generate_script
+from .llm import generate_script
 from .elevenlabs import generate_voice
 from .kie import create_video
 
