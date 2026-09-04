@@ -1,4 +1,5 @@
 import os
+import json
 
 from google import genai
 from google.genai import types
@@ -12,27 +13,43 @@ if not GEMINI_API_KEY:
 client = genai.Client(api_key=GEMINI_API_KEY)
 
 
-def generate_script(topic: str) -> str:
+def generate_script(topic: str) -> dict:
 
     prompt = f"""
-You are an expert short-form video script writer.
+You are an expert AI video script writer.
 
-Create an engaging faceless video script.
+Create a short-form faceless video about:
 
-Topic:
 {topic}
 
-Requirements:
-- Approximately 60 seconds
-- Strong hook in the first sentence
-- Conversational language
-- 5 to 8 short paragraphs
-- Suitable for voice narration
-- No camera directions
-- No markdown
-- Make the content interesting and factual
+Create 5 scenes.
 
-Return only the script.
+For each scene provide:
+
+1. narration
+2. visual_prompt
+
+The narration should be suitable for voice-over.
+
+The visual prompt should describe exactly what an AI video generator
+should create.
+
+Make the visuals cinematic, realistic and engaging.
+
+Return ONLY valid JSON.
+
+Use this exact format:
+
+{{
+  "title": "{topic}",
+  "scenes": [
+    {{
+      "scene_number": 1,
+      "narration": "...",
+      "visual_prompt": "..."
+    }}
+  ]
+}}
 """
 
     response = client.models.generate_content(
@@ -40,11 +57,17 @@ Return only the script.
         contents=prompt,
         config=types.GenerateContentConfig(
             temperature=0.7,
-            max_output_tokens=1500,
+            max_output_tokens=3000,
+            response_mime_type="application/json",
         ),
     )
 
     if not response.text:
         raise RuntimeError("Gemini returned an empty response")
 
-    return response.text
+    try:
+        return json.loads(response.text)
+
+    except json.JSONDecodeError as error:
+
+        raise RuntimeError(f"Gemini returned invalid JSON: {error}")
