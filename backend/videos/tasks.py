@@ -1,7 +1,7 @@
 from celery import shared_task
 
 from .models import Video
-from backend.ai.llm import generate_script
+from ai.llm import generate_script
 from ai.elevenlabs import generate_voice
 from ai.kie import create_video
 

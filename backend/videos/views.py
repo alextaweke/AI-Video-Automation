@@ -7,6 +7,17 @@ from .serializers import VideoSerializer
 from .tasks import generate_video_pipeline
 
 
+class VideoListView(APIView):
+
+    def get(self, request):
+
+        videos = Video.objects.all().order_by("-created_at")
+
+        serializer = VideoSerializer(videos, many=True)
+
+        return Response(serializer.data)
+
+
 class CreateVideoView(APIView):
 
     def post(self, request):
@@ -15,7 +26,6 @@ class CreateVideoView(APIView):
         topic = request.data.get("topic")
 
         if not title or not topic:
-
             return Response(
                 {"error": "title and topic are required"},
                 status=status.HTTP_400_BAD_REQUEST,
@@ -40,7 +50,6 @@ class VideoDetailView(APIView):
     def get(self, request, pk):
 
         try:
-
             video = Video.objects.get(pk=pk)
 
         except Video.DoesNotExist:
