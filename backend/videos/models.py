@@ -1,4 +1,5 @@
 from django.db import models
+from django.conf import settings
 
 
 class Video(models.Model):
@@ -16,19 +17,40 @@ class Video(models.Model):
 
     title = models.CharField(max_length=255)
 
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL,
+        blank=True,
+        null=True,
+        on_delete=models.SET_NULL,
+        related_name="videos",
+    )
+
     topic = models.TextField()
 
     script = models.TextField(blank=True, null=True)
+
+    scenes = models.JSONField(default=list, blank=True)
 
     voice_url = models.URLField(blank=True, null=True)
 
     video_url = models.URLField(blank=True, null=True)
 
-    kie_task_id = models.CharField(max_length=255, blank=True, null=True)
+    kie_task_id = models.CharField(
+        max_length=255,
+        blank=True,
+        null=True,
+    )
 
-    status = models.CharField(max_length=50, choices=STATUS_CHOICES, default="pending")
+    status = models.CharField(
+        max_length=50,
+        choices=STATUS_CHOICES,
+        default="pending",
+    )
 
-    error_message = models.TextField(blank=True, null=True)
+    error_message = models.TextField(
+        blank=True,
+        null=True,
+    )
 
     created_at = models.DateTimeField(auto_now_add=True)
 

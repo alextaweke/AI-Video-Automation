@@ -6,13 +6,20 @@ import { useEffect, useState } from "react";
 import { getVideos } from "@/lib/api";
 import { Video } from "@/types/video";
 import VideoCard from "@/components/VideoCard";
+import ProtectedPage from "@/components/ProtectedPage";
+import { useAuth } from "@/components/AuthProvider";
 
 export default function DashboardPage() {
+  const { isAuthenticated, isReady } = useAuth();
   const [videos, setVideos] = useState<Video[]>([]);
 
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!isReady || !isAuthenticated) {
+      return;
+    }
+
     async function loadVideos() {
       try {
         const data = await getVideos();
@@ -26,10 +33,11 @@ export default function DashboardPage() {
     }
 
     loadVideos();
-  }, []);
+  }, [isAuthenticated, isReady]);
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <ProtectedPage>
+      <main className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto max-w-7xl px-6 py-12">
         <div className="flex items-center justify-between">
           <div>
@@ -71,6 +79,7 @@ export default function DashboardPage() {
           </div>
         )}
       </div>
-    </main>
+      </main>
+    </ProtectedPage>
   );
 }
