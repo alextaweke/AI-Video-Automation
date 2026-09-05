@@ -1,9 +1,11 @@
 import Link from "next/link";
 import VideoForm from "@/components/VideoForm";
+import ProtectedPage from "@/components/ProtectedPage";
 
 export default function CreatePage() {
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
+    <ProtectedPage>
+      <main className="min-h-screen bg-zinc-950 text-white">
       <div className="mx-auto max-w-3xl px-6 py-16">
         <Link
           href="/dashboard"
@@ -24,6 +26,7 @@ export default function CreatePage() {
           <VideoForm />
         </div>
       </div>
-    </main>
+      </main>
+    </ProtectedPage>
   );
 }

@@ -6,6 +6,8 @@ import { useEffect, useState } from "react";
 import { getVideo } from "@/lib/api";
 import { Video } from "@/types/video";
 import StatusBadge from "@/components/StatusBadge";
+import ProtectedPage from "@/components/ProtectedPage";
+import { useAuth } from "@/components/AuthProvider";
 
 interface Props {
   params: Promise<{
@@ -14,11 +16,16 @@ interface Props {
 }
 
 export default function VideoPage({ params }: Props) {
+  const { isAuthenticated, isReady } = useAuth();
   const [video, setVideo] = useState<Video | null>(null);
 
   const [error, setError] = useState("");
 
   useEffect(() => {
+    if (!isReady || !isAuthenticated) {
+      return;
+    }
+
     let interval: NodeJS.Timeout;
 
     async function loadVideo() {
@@ -46,33 +53,38 @@ export default function VideoPage({ params }: Props) {
         clearTimeout(interval);
       }
     };
-  }, [params]);
+  }, [isAuthenticated, isReady, params]);
 
   if (error) {
     return (
-      <main className="min-h-screen bg-zinc-950 p-10 text-red-400">
-        {error}
-      </main>
+      <ProtectedPage>
+        <main className="min-h-screen bg-zinc-950 p-10 text-red-400">
+          {error}
+        </main>
+      </ProtectedPage>
     );
   }
 
   if (!video) {
     return (
-      <main className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
-        Loading video...
-      </main>
+      <ProtectedPage>
+        <main className="flex min-h-screen items-center justify-center bg-zinc-950 text-white">
+          Loading video...
+        </main>
+      </ProtectedPage>
     );
   }
 
   return (
-    <main className="min-h-screen bg-zinc-950 text-white">
-      <div className="mx-auto max-w-5xl px-6 py-12">
-        <Link
-          href="/dashboard"
-          className="text-sm text-zinc-400 hover:text-white"
-        >
-          ← Dashboard
-        </Link>
+    <ProtectedPage>
+      <main className="min-h-screen bg-zinc-950 text-white">
+        <div className="mx-auto max-w-5xl px-6 py-12">
+          <Link
+            href="/dashboard"
+            className="text-sm text-zinc-400 hover:text-white"
+          >
+            ← Dashboard
+          </Link>
 
         <div className="mt-8 flex items-center justify-between">
           <div>
@@ -135,7 +147,8 @@ export default function VideoPage({ params }: Props) {
             </div>
           )}
         </div>
-      </div>
-    </main>
+        </div>
+      </main>
+    </ProtectedPage>
   );
 }

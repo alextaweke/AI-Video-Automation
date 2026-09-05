@@ -24,3 +24,37 @@ body {
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
+
+html[data-theme="light"] {
+  --background: #f8fafc;
+  --foreground: #18181b;
+}
+
+html[data-theme="light"] body,
+html[data-theme="light"] .bg-zinc-950 {
+  background: #f8fafc;
+}
+
+html[data-theme="light"] .bg-zinc-900 {
+  background: #ffffff;
+}
+
+html[data-theme="light"] .text-white {
+  color: #18181b;
+}
+
+html[data-theme="light"] .text-zinc-300,
+html[data-theme="light"] .text-zinc-400,
+html[data-theme="light"] .text-zinc-500 {
+  color: #52525b;
+}
+
+html[data-theme="light"] .border-zinc-800,
+html[data-theme="light"] .border-zinc-700 {
+  border-color: #e4e4e7;
+}
+
+html[data-theme="light"] input.bg-zinc-950,
+html[data-theme="light"] textarea.bg-zinc-950 {
+  background: #ffffff;
+}

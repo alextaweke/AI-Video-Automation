@@ -7,7 +7,7 @@ from .views import (
 )
 
 urlpatterns = [
-    path("", VideoListView.as_view()),
-    path("create/", CreateVideoView.as_view()),
-    path("<int:pk>/", VideoDetailView.as_view()),
+    path("", VideoListView.as_view(), name="video-list"),
+    path("create/", CreateVideoView.as_view(), name="video-create"),
+    path("<int:pk>/", VideoDetailView.as_view(), name="video-detail"),
 ]

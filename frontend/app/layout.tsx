@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
 
+import { AuthProvider } from "@/components/AuthProvider";
 import Navbar from "@/components/Navbar";
+import { ThemeProvider } from "@/components/ThemeProvider";
 
 export const metadata: Metadata = {
   title: "AI Video Automation",
@@ -16,9 +18,13 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="bg-zinc-950">
-        <Navbar />
+        <ThemeProvider>
+          <AuthProvider>
+            <Navbar />
 
-        {children}
+            {children}
+          </AuthProvider>
+        </ThemeProvider>
       </body>
     </html>
   );
