@@ -4,6 +4,7 @@ import Link from "next/link";
 
 import { Video } from "@/types/video";
 import StatusBadge from "./StatusBadge";
+import GenerationProgress from "./GenerationProgress";
 
 interface Props {
   video: Video;
@@ -30,6 +31,7 @@ export default function VideoCard({ video }: Props) {
       <div className="text-xs text-zinc-500">
         {new Date(video.created_at).toLocaleString()}
       </div>
+      {!["script_ready", "completed", "failed"].includes(video.status) && <div className="mt-5 border-t border-zinc-800 pt-4"><GenerationProgress progress={video.progress} compact /></div>}
     </Link>
   );
 }

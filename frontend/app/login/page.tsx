@@ -87,6 +87,7 @@ export default function LoginPage() {
             Create an account
           </Link>
         </p>
+        <p className="mt-3 text-center text-sm"><Link href="/forgot-password" className="text-purple-300 hover:text-white">Forgot password?</Link></p>
       </form>
     </main>
   );

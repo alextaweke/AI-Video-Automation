@@ -4,7 +4,7 @@ import { FormEvent, useEffect, useState } from "react";
 
 import { useAuth } from "@/components/AuthProvider";
 import ProtectedPage from "@/components/ProtectedPage";
-import { updateProfile } from "@/lib/api";
+import { getUsage, updateProfile } from "@/lib/api";
 
 export default function ProfilePage() {
   const { updateUser, user } = useAuth();
@@ -14,6 +14,10 @@ export default function ProfilePage() {
   const [message, setMessage] = useState("");
   const [error, setError] = useState("");
   const [loading, setLoading] = useState(false);
+  const [preferredVoice, setPreferredVoice] = useState("Sarah");
+  const [voiceSpeed, setVoiceSpeed] = useState(1);
+  const [voiceStability, setVoiceStability] = useState(50);
+  const [voiceSimilarity, setVoiceSimilarity] = useState(75);
 
   useEffect(() => {
     if (!user) {
@@ -27,6 +31,15 @@ export default function ProfilePage() {
     });
   }, [user]);
 
+  useEffect(() => {
+    getUsage().then(({ account }) => {
+      setPreferredVoice(account.preferred_voice || "Sarah");
+      setVoiceSpeed(Number(account.preferred_voice_settings?.speed ?? 1));
+      setVoiceStability(Number(account.preferred_voice_settings?.stability ?? 50));
+      setVoiceSimilarity(Number(account.preferred_voice_settings?.similarity ?? 75));
+    }).catch(() => undefined);
+  }, []);
+
   async function handleSubmit(event: FormEvent) {
     event.preventDefault();
     setError("");
@@ -38,6 +51,8 @@ export default function ProfilePage() {
         email: email.trim(),
         first_name: firstName.trim(),
         last_name: lastName.trim(),
+        preferred_voice: preferredVoice,
+        preferred_voice_settings: { speed: voiceSpeed, stability: voiceStability, similarity: voiceSimilarity },
       });
 
       updateUser(response.user);
@@ -111,6 +126,18 @@ export default function ProfilePage() {
                   className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none focus:border-purple-500"
                   autoComplete="email"
                 />
+              </div>
+
+              <div className="mt-5 border-t border-zinc-800 pt-5">
+                <label className="mb-2 block text-sm font-medium text-zinc-300">Default voice</label>
+                <select value={preferredVoice} onChange={(event) => setPreferredVoice(event.target.value)} className="w-full rounded-xl border border-zinc-700 bg-zinc-950 px-4 py-3 text-white outline-none focus:border-purple-500">
+                  {["Sarah", "Adam", "Rachel", "Michael"].map((voice) => <option key={voice} value={voice}>{voice}</option>)}
+                </select>
+                <div className="mt-4 grid gap-4 sm:grid-cols-3">
+                  <label className="text-sm text-zinc-300">Speed <span className="float-right text-zinc-500">{voiceSpeed.toFixed(2)}x</span><input type="range" min="0.5" max="2" step="0.05" value={voiceSpeed} onChange={(event) => setVoiceSpeed(Number(event.target.value))} className="mt-2 w-full accent-purple-500" /></label>
+                  <label className="text-sm text-zinc-300">Stability <span className="float-right text-zinc-500">{voiceStability}</span><input type="range" min="0" max="100" value={voiceStability} onChange={(event) => setVoiceStability(Number(event.target.value))} className="mt-2 w-full accent-purple-500" /></label>
+                  <label className="text-sm text-zinc-300">Similarity <span className="float-right text-zinc-500">{voiceSimilarity}</span><input type="range" min="0" max="100" value={voiceSimilarity} onChange={(event) => setVoiceSimilarity(Number(event.target.value))} className="mt-2 w-full accent-purple-500" /></label>
+                </div>
               </div>
 
               {message && (

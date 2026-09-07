@@ -124,6 +124,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/6.1/howto/static-files/
 
 STATIC_URL = "static/"
+DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 
 
 # Email
@@ -134,6 +135,7 @@ MAILERS = {
         "BACKEND": "django.core.mail.backends.console.EmailBackend",
     },
 }
+FRONTEND_URL = os.getenv("FRONTEND_URL", "http://localhost:3000").rstrip("/")
 # settings.py
 
 # Standard URLs without the query string strings
@@ -149,6 +151,11 @@ CELERY_TIMEZONE = "UTC"
 CELERY_BROKER_TRANSPORT_OPTIONS = {"redis_backend_protocol": 2}
 CELERY_RESULT_BACKEND_TRANSPORT_OPTIONS = {"redis_backend_protocol": 2}
 CELERY_BROKER_CONNECTION_RETRY_ON_STARTUP = True
+KIE_MAX_RETRIES = int(os.getenv("KIE_MAX_RETRIES", "3"))
+FFMPEG_BINARY = os.getenv("FFMPEG_BINARY", "ffmpeg")
+FFPROBE_BINARY = os.getenv("FFPROBE_BINARY", "ffprobe")
+BACKGROUND_MUSIC_DIR = Path(os.getenv("BACKGROUND_MUSIC_DIR", MEDIA_ROOT / "music"))
+THUMBNAIL_MODEL = os.getenv("THUMBNAIL_MODEL", "gemini-3.1-flash-image")
 
 REST_FRAMEWORK = {
     "DEFAULT_AUTHENTICATION_CLASSES": [

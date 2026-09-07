@@ -16,7 +16,7 @@ if not KIE_MODEL:
 BASE_URL = "https://api.kie.ai"
 
 
-def create_video(prompt: str):
+def create_video(prompt: str, aspect_ratio: str = "9:16"):
 
     url = f"{BASE_URL}/api/v1/jobs/createTask"
 
@@ -30,7 +30,7 @@ def create_video(prompt: str):
         "callBackUrl": CALLBACK_URL,
         "input": {
             "prompt": prompt,
-            "aspect_ratio": "9:16",
+            "aspect_ratio": aspect_ratio,
             "resolution": "720p",
             "duration": "5",
         },
